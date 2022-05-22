@@ -12,48 +12,22 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>HERD NERD</title>
-    <style></style>
+    <title>ULTIMATUM</title>
+    <!--<style>
+        canvas{
+            background-color: aquamarine;
+        }
+    </style>-->
 </head>
-
 <body>
-    <script>
-        //GAME PARAMETERS
-        const heightOfBoard = 550; //pixels
-        const FPS = 30; //frames per second
-
-        // derived dimensions
-        const widthOfBoard = heightOfBoard *0.9;
-
-        //collurs
-        const boardColour = "DarkSeaGreen";
-
-        //set up game canvas
-
-        let canvas = document.createElement("canvas");
-        canvas.height = heightOfBoard;
-        canvas.width = widthOfBoard;
-        document.body.appendChild(canvas);
-
-        //setting up context
-
-        let context = canvas.getContext("2d");
-
-        //set up game loop
-
-        setInterval(loop, 1000 / FPS);
-
-        function loop() {
-            drawBoard();
-        }
-        
-        function drawBoard() {
-            context.fillStyle = boardColour
-            context.fillRect(0,0,widthOfBoard,heightOfBoard); //draws the board in green
-        }
-    "use strict";
-    // TODO JavaScript
-    </script>
+    <div>
+        <canvas id="canvas"></canvas>
+        <p>Player 1: <span id = "player1"></span></p>
+        <p>Player 2: <span id = "player2"></span></p>
+    </div>
+    <div>
+        <script type="text/JavaScript" src="main.js"></script>
+    </div>
 </body>
 
 </html>

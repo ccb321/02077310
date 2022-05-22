@@ -2,12 +2,13 @@
   "name": "computing-2-submission",
   "type": "module",
   "version": "1.0.0",
-  "description": "",
+  "description": "dots and boxes",
   "main": "web-app/server/server.js",
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "docdash": "^1.2.0",
+    "electron": "^18.2.4",
     "mocha": "^9.2.2"
   },
   "dependencies": {

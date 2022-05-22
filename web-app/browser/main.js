@@ -1,229 +1,107 @@
-import R from "./common/ramda.js";
-import Json_rpc from "./Json_rpc.js";
-class App extends React.Component {
+//GAME PARAMETERS
+const heightOfBoard = 550; //pixels
+const FPS = 30; //frames per second
+const sizeOfGrid = 10; // number of rows and collumns, make larger to get more dots
 
-    constructor(props) {
-      super(props)
-      this.state = this.initialBoard(5)
-    }
-  
-    initialBoard = (size) => {
-      let state = {boardSize: size,
-      numRed: 0,
-      numBlue: 0,
-      turn: "red",
-      winMessage: "",
-      lineCoordinates: {},
-      boxColors: {}
-    }
-    for (let i=0; i<2; i++){
-      for (let j=0; j<state.boardSize+1; j++) {
-        for (let k=0; k<state.boardSize; k++) {
-          state.lineCoordinates[i+","+j+","+k]=0
-        }
-      }
-    }
-    for (let i=0; i< state.boardSize; i++) {
-      for (let j=0; j< state.boardSize; j++) {
-        state.boxColors[i+","+j] = "rgb(255,255,255)"
-      }
-    }
-    return state
+// derived dimensions
+const widthOfBoard = heightOfBoard *0.9;
+const cellSize = widthOfBoard / (sizeOfGrid + 2); // size of cell (and margins) is the width of the board divided by how many cells are wanted +2 margin
+const strokeSize = cellSize /12; //stroke width 
+const dotRad = strokeSize // diameter of dot is double of connecting strokes
+const topMargin = heightOfBoard - (sizeOfGrid +1) *cellSize; //top margin for scores and names
+
+//colours
+const boardColour = "silver";
+const colourBoarder = "gray";
+const colourDot = "gray";
+const colourComp = "crimson";
+const colourCompHover = "lightpink";
+const colourPlayer = "royalblue";
+const colourPlayerHover = "lightsteelblue";
+
+
+//set up game canvas
+
+let canvas = document.createElement("canvas");
+canvas.height = heightOfBoard;
+canvas.width = widthOfBoard;
+document.body.appendChild(canvas);
+
+//setting up context
+
+let context = canvas.getContext("2d");
+context.lineWidth = strokeSize;
+
+//game variables
+let playersTurn, squares;
+
+//start a new game
+newGame();
+
+//set up game loop
+
+setInterval(loop, 1000 / FPS);
+
+function loop() {
+    drawBoard();//decides order in which stuff is drawn on
+    drawSquares();
+    drawGrid();
   }
-  
-    fillLine = (event) => {
-      var currentCoord=event.target.dataset.coord
-      if (this.state.lineCoordinates[currentCoord] === 0) {
-        //event.target.style.backgroundColor =  this.state.turn
-        let newState=this.state.lineCoordinates
-        newState[currentCoord] = this.state.turn === "red"? 1 : -1
-        this.setState(prevState => ({
-          lineCoordinates: newState,
-        }))
-  
-        var splitCoord=currentCoord.split(',')
-        var i = splitCoord[0]
-        var j = splitCoord[1]
-        var k = splitCoord[2]
-  
-        let newBoxColors = this.state.boxColors
-  
-        var madeSquare = 0
-  
-        if (i === "0") {
-          if (this.checkSquare(j,k) === 4) {
-            madeSquare = 1
-            newBoxColors[j+','+k] =  (this.state.turn ==="red") ? "rgba(255,0,0,0.5)" : "rgba(0,0,255,0.5)"
-            this.setState((prevState)=>({
-              numRed: (prevState.turn ==="red") ? prevState.numRed+1 : prevState.numRed,
-              numBlue: (prevState.turn ==="blue") ? prevState.numBlue+1 : prevState.numBlue,
-              boxColors: newBoxColors,
-            }))
-          }
-          if (this.checkSquare(parseFloat(j)-1,k) === 4) {
-            madeSquare = 1
-            newBoxColors[(parseFloat(j)-1)+','+k] = (this.state.turn ==="red") ? "rgba(255,0,0,0.5)" : "rgba(0,0,255,0.5)"
-            this.setState((prevState)=>({
-              numRed: (prevState.turn ==="red") ? prevState.numRed+1 : prevState.numRed,
-              numBlue: (prevState.turn ==="blue") ? prevState.numBlue+1 : prevState.numBlue,
-              boxColors: newBoxColors,
-            }))
-          }
-        } else {
-          if (this.checkSquare(k,j) === 4) {
-            madeSquare = 1
-            newBoxColors[k+','+j] = (this.state.turn ==="red") ? "rgba(255,0,0,0.5)" : "rgba(0,0,255,0.5)"
-            this.setState((prevState)=>({
-              numRed: (prevState.turn ==="red") ? prevState.numRed+1 : prevState.numRed,
-              numBlue: (prevState.turn ==="blue") ? prevState.numBlue+1 : prevState.numBlue,
-              boxColors: newBoxColors,
-            }))
-          }
-          if (this.checkSquare(k,parseFloat(j)-1) === 4) {
-            madeSquare = 1
-            newBoxColors[k+','+(parseFloat(j)-1)] = (this.state.turn ==="red") ? "rgba(255,0,0,0.5)" : "rgba(0,0,255,0.5)"
-            this.setState((prevState)=>({
-              numRed: (prevState.turn ==="red") ? prevState.numRed+1 : prevState.numRed,
-              numBlue: (prevState.turn ==="blue") ? prevState.numBlue+1 : prevState.numBlue,
-              boxColors: newBoxColors,
-            }))
-          }
-        }
-        if (madeSquare === 0) {
-          this.setState((prevState)=> ({
-            turn: prevState.turn === "red" ? "blue" : "red",
-          }))
-        } else {
-          this.checkGameOver()
-        }
+function drawBoard() {
+  context.fillStyle = boardColour;
+  context.strokeStyle = colourBoarder;
+  context.fillRect(0,0, widthOfBoard, heightOfBoard); // draws board in green
+  context.strokeRect (strokeSize / 2, strokeSize / 2, widthOfBoard - strokeSize, heightOfBoard - strokeSize); // draws boarder 
+}
+
+function drawDot(x,y) {
+  context.fillStyle = colourDot;
+  context.beginPath();
+  context.arc(x,y, dotRad, 0, Math.PI * 2);
+  context.fill();
+}
+function drawSquares() {
+
+}
+
+function getGridX(col) {
+  return cellSize * (col +1);
+}
+
+function getGridY(row) {
+  return topMargin + cellSize * row;
+}
+
+function newGame() {
+  // deciding who goes first
+  playersTurn = Math.random() >= 0.5; // boolean
+  //SET UP SQUARES
+  squares = [];
+  for (let i =0; i< sizeOfGrid +1; i++) {
+
+    squares[i] = []
+      for (let j=0; j< sizeOfGrid +1; j++) {
+        squares[i][j] = new Square(getGridX(j), getGridY(i), cellSize, cellSize);
       }
-    }
-  
-    checkSquare = (j,k) => {
-      var checker1 = Math.abs(this.state.lineCoordinates['0,'+j+','+k])
-      var checker2 = Math.abs(((parseFloat(j)+1))>this.state.boardSize ? 0 : this.state.lineCoordinates['0,'+(parseFloat(j)+1)+','+k])
-      var checker3 = Math.abs(this.state.lineCoordinates['1,'+k+','+j])
-      var checker4 = Math.abs(((parseFloat(k)+1))>this.state.boardSize ? 0 : this.state.lineCoordinates['1,'+(parseFloat(k)+1)+','+j])
-      return checker1+checker2+checker3+checker4
-    }
-  
-    checkGameOver = () => {
-      this.setState((prevState) =>   ({
-        winMessage: (prevState.numRed+prevState.numBlue == prevState.boardSize**2)? this.makeWinMessage(prevState) : ""
-      }))
-    }
-  
-    makeWinMessage = (state) => {
-      var winMessage
-        if (state.numRed > state.numBlue) {
-          winMessage = "Red wins! Select a board size to start a new game."
-        } else if (state.numRed < state.numBlue) {
-          winMessage = "Blue wins! Select a board size to start a new game."
-        } else {
-          winMessage = "Draw! Select a board size to start a new game."
-        }
-        return (winMessage)
-    }
-  
-    changeBoardSize = (event) => {
-      if (window.confirm('Are you sure you would like to start a new game?')){
-        var newState
-        if (event.target.id === "small") {
-          newState = this.initialBoard(5)
-        } else if (event.target.id === "medium") {
-          newState = this.initialBoard(8)
-        } else if (event.target.id === "large") {
-          newState = this.initialBoard(11)
-        }
-        this.setState((prevState)=> newState)
-      }
-    }
-  
-    selectColor = (int) => {
-      if (int===0) {
-        return ("rgb(255,255,255)")
-      } else if (int===1) {
-        return ("rgb(255,0,0)")
-      } else if (int===-1) {
-        return ("rgb(0,0,255)")
-      }
-    }
-  
-    tint = (event) => {
-      var currentCoord=event.target.dataset.coord
-      if (this.state.lineCoordinates[currentCoord] === 0) {
-          if (this.state.turn === "red") {
-            event.target.style.backgroundColor = "rgba(255,0,0,0.5)"
-          } else {
-            event.target.style.backgroundColor = "rgba(0,0,255,0.5)"
-          }
-      }
-    }
-  
-    untint = (event) => {
-      var currentCoord=event.target.dataset.coord
-      if (this.state.lineCoordinates[currentCoord] === 0) {
-        event.target.style.backgroundColor = "rgb(255,255,255)"
-      }
-    }
-  
-    makeBoard = (boardSize) => {
-      var cols=[];
-      for (let i=0; i<=2*boardSize; i++) {
-        var row=[]
-        for (let j=0; j<=2*boardSize; j++) {
-          if (i%2 === 0) {
-            if (j%2 ===0) {
-              row.push(React.createElement("div",
-              {className: "dot", id: "dot"+Math.floor(i/2)+","+Math.floor(j/2)}
-              ,""))
-            } else {
-              row.push(React.createElement("div"
-                , {className: "horizContainer", "data-coord":"0,"+Math.floor(i/2)+ "," +Math.floor(j/2)
-                , onClick:this.fillLine, style:{backgroundColor: this.selectColor(this.state.lineCoordinates["0,"+Math.floor(i/2)+ "," +Math.floor(j/2)])}
-                , onMouseEnter:this.tint, onMouseLeave:this.untint}
-                , ""))
-            }
-          } else {
-            if (j%2 === 0) {
-              row.push(React.createElement("div"
-                ,{className: "vertContainer","data-coord":"1,"+Math.floor(j/2)+ "," +Math.floor(i/2)
-                , onClick:this.fillLine, style:{backgroundColor: this.selectColor(this.state.lineCoordinates["1,"+Math.floor(j/2)+ "," +Math.floor(i/2)])}
-                , onMouseEnter:this.tint, onMouseLeave:this.untint}
-                ,""))
-            } else {
-              row.push(React.createElement("div"
-                ,{className: "box", id: "box"+Math.floor(i/2)+','+Math.floor(j/2), style: {backgroundColor: this.state.boxColors[Math.floor(i/2)+','+Math.floor(j/2)]}}
-                ,""))
-  
-            }
-          }
-        }
-        cols.push(React.createElement("div",{className:"row"},row))
-      }
-  
-      return (React.createElement("div",{id:"game-board"},cols))
-    }
-  
-    render() {
-      return (
-        <div id="game">
-          <div id="header">
-            <h1 id="welcome">Dots &amp; Boxes </h1>
-            <p id="score"> Red:{this.state.numRed} Blue:{this.state.numBlue} </p>
-            Board size :
-            <button id= "small" onClick={this.changeBoardSize}> 5x5 </button>
-            <button id="medium" onClick={this.changeBoardSize}> 8x8 </button>
-            <button id="large" onClick={this.changeBoardSize}> 11x11 </button>
-            <p id="winner"> {this.state.winMessage} </p>
-          </div>
-          <div id="board">
-            {this.makeBoard(this.state.boardSize)}
-          </div>
-        </div>
-      );
-    }
   }
-  
-  ReactDOM.render(<App/>,document.getElementById('root'))
-  
+}
+function drawGrid() {
+  for (let i =0; i< sizeOfGrid +1; i++) //looping rows size of grid is the size of spaces so +1
+    for (let j=0; j< sizeOfGrid +1; j++) // looping collumns
+      drawDot(getGridX(j), getGridY(i));
+}
+
+// when moving mouse want to know what cell we are on, do this by creating an object 
+//create square object constructor
+function Square(x,y,w,h) {
+  this.w = w;
+  this.h = h;
+  this.bottom = y + h;
+  this.left = x;
+  this.right = x +w;
+  this.top = y;
+
+  this.contains = function(x,y) {
+    return x >= this.left && x < this.right && y >= this.top && y < this.bottom; //checks to see if x and y values are inside 
+  }
+}
