@@ -3,7 +3,57 @@
 <!doctype html> <!-- This first line tells browsers to expect modern standard html 5 -->
 <html lang="en-gb"> <!-- This is indicates the page is written in British English, useful for accessibility -->
 <meta charset="utf-8"> <!-- This indicates how the file is encoded. utf-8 is standard -->
-<title>Your Web-app Title</title> <!-- All pages need a title, this will be displayed in the browser's title bar -->
+<title>ULTIAMATUM</title> <!-- All pages need a title, this will be displayed in the browser's title bar -->
 <link rel="stylesheet" href="default.css"> <!-- Import style sheet – default.css -->
 <link rel="icon" href="./assets/favicon.png"> <!-- Import 'Favorites Icon' – favicon.png -->
 <script type="module" src="main.js"></script> <!-- Load the main script. Must be type="module". Have only one of these -->
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>HERD NERD</title>
+    <style></style>
+</head>
+
+<body>
+    <script>
+        //GAME PARAMETERS
+        const heightOfBoard = 550; //pixels
+        const FPS = 30; //frames per second
+
+        // derived dimensions
+        const widthOfBoard = heightOfBoard *0.9;
+
+        //collurs
+        const boardColour = "DarkSeaGreen";
+
+        //set up game canvas
+
+        let canvas = document.createElement("canvas");
+        canvas.height = heightOfBoard;
+        canvas.width = widthOfBoard;
+        document.body.appendChild(canvas);
+
+        //setting up context
+
+        let context = canvas.getContext("2d");
+
+        //set up game loop
+
+        setInterval(loop, 1000 / FPS);
+
+        function loop() {
+            drawBoard();
+        }
+        
+        function drawBoard() {
+            context.fillStyle = boardColour
+            context.fillRect(0,0,widthOfBoard,heightOfBoard); //draws the board in green
+        }
+    "use strict";
+    // TODO JavaScript
+    </script>
+</body>
+
+</html>
