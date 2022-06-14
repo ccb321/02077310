@@ -1,250 +1,260 @@
-//GAME PARAMETERS
-const heightOfBoard = 550; //pixels
-const FPS = 30; //frames per second
-const sizeOfGrid = 6; // number of rows and collumns, make larger to get more dots
 
-// derived dimensions
-const widthOfBoard = heightOfBoard *0.9;
-const cellSize = widthOfBoard / (sizeOfGrid + 2); // size of cell (and margins) is the width of the board divided by how many cells are wanted +2 margin
-const strokeSize = cellSize /12; //stroke width 
-const dotRad = strokeSize // diameter of dot is double of connecting strokes
-const topMargin = heightOfBoard - (sizeOfGrid +1) *cellSize; //top margin for scores and names
+import Crucify from "./common/Crucify.js";
 
-//colours
-const boardColour = "silver";
-const colourBoarder = "gray";
-const colourDot = "gray";
-const colourComp = "crimson";
-const colourCompHover = "lightpink";
-const colourPlayer = "royalblue";
-const colourPlayerHover = "lightsteelblue";
+console.log("we in");
+
+// start new game
+let f0 = document.getElementById("f0");
+let f1 = document.getElementById("f1");
+let f2 = document.getElementById("f2");
+let f3 = document.getElementById("f3");
+let f4 = document.getElementById("f4");
+let f5 = document.getElementById("f5");
+let f6 = document.getElementById("f6");
+let f7 = document.getElementById("f7");
+let f8 = document.getElementById("f8");
+let f9 = document.getElementById("f9");
+let f10 = document.getElementById("f10");
+let f11 = document.getElementById("f11");
+let f12 = document.getElementById("f12");
+let f13 = document.getElementById("f13");
+let f14 = document.getElementById("f14");
+let f15 = document.getElementById("f15");
+let gameBoard = document.getElementById("board");
+let button = document.getElementById("btnNewGame");
+let BOARD_SIZE = 16;
+let numberOfRows = 4;
+let UNOCCUPIED = " ";
+let Player_1 = "X";
+let Player_2 = "O";
+let playersTurn = "Player1";
+let numberOfTurns = 0;
+const BOARD = new Array();
+
+//graphics
+
+let graphicsX = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.2 47.95">
+<defs>
+    <style>
+        .xcls-1 {
+            fill: #18556b;
+        }
+
+        .xcls-2 {
+            fill: #29b2e2;
+        }
+    </style>
+</defs>
+    <polygon class="xcls-1" points="35.9 47.51 30.67 42.28 20.77 27.38 29.88 26.8 35.9 47.51" />
+    <path class="xcls-1"
+        d="M39.19.29A1,1,0,0,0,38.48,0H31.41a1,1,0,0,0-.8.4l-9.83,13a1,1,0,0,1-.8.4c-.26,0,4.9,8,4.9,8C25.07,22,44.23,5.35,44.41,5.53Z" />
+    <path class="xcls-1"
+        d="M14.76,5.52,9.54.29A1,1,0,0,0,8.83,0H1.71a1,1,0,0,0-1,1V5.12a1,1,0,0,0,.2.61L11.2,19.63a1,1,0,0,1,0,1.15h0L.18,37a1,1,0,0,0-.17.56v4.14a1,1,0,0,0,.29.71l5.22,5.23c-.17-.18,15.63-28.52,15.37-28.86C20.88,18.8,14.58,5.34,14.76,5.52Z" />
+    <path class="xcls-2"
+        d="M43.71,5.23a1,1,0,0,1,1,1v4.12a1,1,0,0,1-.21.61L33.61,24.84a1,1,0,0,0,0,1.19L45,42.24a1,1,0,0,1,.18.58V47a1,1,0,0,1-1,1H36.73a1,1,0,0,1-.83-.44L26,32.61a1,1,0,0,0-.82-.44,1,1,0,0,0-.84.45L14.51,47.5a1,1,0,0,1-.84.45H6.22a1,1,0,0,1-1-1V42.81a1,1,0,0,1,.17-.56L16.45,26a1,1,0,0,0,0-1.15L6.12,11a1,1,0,0,1-.2-.6V6.23a1,1,0,0,1,1-1h7.12a1,1,0,0,1,.81.42l9.52,13a1,1,0,0,0,.81.41,1,1,0,0,0,.8-.4l9.83-13a1,1,0,0,1,.81-.41Z" />
+</svg>`;
+
+let graphicsO = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52.68 50.95">
+<defs>
+    <style>
+        .ocls-1 {
+            fill: #7a1f1f;
+        }
+
+        .ocls-2 {
+            fill: #c33;
+        }
+    </style>
+</defs>
+    <path class="ocls-1"
+        d="M32.89,12.76a13.94,13.94,0,0,1,3.83,10.13c0,8-5.36,13.66-13,13.66A12.66,12.66,0,0,1,14.54,33L29.22,50.29l20-25Z" />
+    <path class="ocls-1"
+        d="M41.16,6.61C37,2.43,31,0,23.79,0,9.71,0,0,9.35,0,22.89A22.34,22.34,0,0,0,6.27,39.12l5.22,5.23c-4-4,4.73-32.06,4.73-32.06s25-1,30.17-.45Z" />
+    <path class="ocls-2"
+        d="M29,5.23c14.07,0,23.7,9.35,23.66,22.9S43,51,28.89,51,5.19,41.66,5.23,28.13,14.93,5.23,29,5.23Zm-.1,36.56c7.66,0,13-5.64,13-13.66S36.66,14.4,29,14.4,16,20,16,28.13s5.29,13.66,13,13.66" />
+</svg>`;
+
+NewGame();
+//event listeners
+
+f0.addEventListener("click", function clickster0() {
+  PlayUser(0,playersTurn);
+});
+f1.addEventListener("click", function clickster1(){
+  PlayUser(1,playersTurn);
+});
+f2.addEventListener("click", function clickster2(){
+  PlayUser(2,playersTurn);
+});
+f3.addEventListener("click", function clickster3(){
+  PlayUser(3,playersTurn);
+});
+f4.addEventListener("click", function clickster4(){
+  PlayUser(4,playersTurn);
+});
+f5.addEventListener("click", function clickster5(){
+  PlayUser(5,playersTurn);
+});
+f6.addEventListener("click", function clickster6(){
+  PlayUser(6,playersTurn);
+});
+f7.addEventListener("click", function clickster7(){
+  PlayUser(7,playersTurn);
+});
+f8.addEventListener("click", function clickster8(){
+  PlayUser(8,playersTurn);
+});
+f9.addEventListener("click", function clickster9(){
+  PlayUser(9,playersTurn);
+});
+f10.addEventListener("click", function clickster10(){
+  PlayUser(10,playersTurn);
+});
+f11.addEventListener("click", function clickster11(){
+  PlayUser(11,playersTurn);
+});
+f12.addEventListener("click", function clickster12(){
+  PlayUser(12,playersTurn);
+});
+f13.addEventListener("click", function clickster13(){
+  PlayUser(13,playersTurn);
+});
+f14.addEventListener("click", function clickster14(){
+  PlayUser(14,playersTurn);
+});
+f15.addEventListener("click", function clickster15(){
+  PlayUser(15,playersTurn);
+});
+button.addEventListener("click", NewGame());
+
+console.log(BOARD);
+
+//if button is pressed starts a new game
+button.addEventListener("click", function restart(){
+  playersTurn = "Player1";
+  NewGame();
+});
 
 
-//set up game canvas
-
-let canvas = document.createElement("canvas");
-canvas.height = heightOfBoard;
-canvas.width = widthOfBoard;
-document.body.appendChild(canvas);
-let canvRect = canvas.getBoundingClientRect();
-
-//Definitions
-
-const Side = {
-  BOT: 0,
-  LEFT: 1,
-  RIGHT: 2,
-  TOP: 3 //sets numbers up for switch to figure out what side of the square it is
-};
-
-//setting up context
-
-let context = canvas.getContext("2d");
-context.lineWidth = strokeSize;
-
-//game variables
-let playersTurn, squares;
-
-//start a new game
-newGame();
-
-//Event handlers
-canvas.addEventListener("mousemove", hightlightGrid); //mousemovement is based on screen coordinates not canvas
-
-
-//set up game loop
-
-setInterval(loop, 1000 / FPS);
-
-function loop() {
-  drawBoard();//decides order in which stuff is drawn on
-  drawSquares();
-  drawGrid();
-}
-
-function drawBoard() {
-  context.fillStyle = boardColour;
-  context.strokeStyle = colourBoarder;
-  context.fillRect(0,0, widthOfBoard, heightOfBoard); // draws board in green
-  context.strokeRect (strokeSize / 2, strokeSize / 2, widthOfBoard - strokeSize, heightOfBoard - strokeSize); // draws boarder 
-}
-
-function drawDot(x,y) {
-  context.fillStyle = colourDot;
-  context.beginPath();
-  context.arc(x,y, dotRad, 0, Math.PI * 2);
-  context.fill();
-}
-
-function drawLine(x0, y0, x1, y1, colour) {
-  context.strokeStyle = colour;
-  context.beginPath();
-  context.moveTo(x0,y0);
-  context.lineTo(x1,y1);
-  context.stroke();
-}
-
-
-function drawSquares() {
-  for (let row of squares) { //iterate over every row of the squares
-    for (let square of row) { // iterate over every square of each row
-      square.drawSides();
-      square.drawFill();
-    }
+function NewGame() {
+  //new game should clear the board and pick the player that is playing as well as set variables to 0
+  console.log("bababooey");
+  if (playersTurn == "Player1" || GameOver(BOARD)) {
+    //makes it so button cannot be pressed
+    document.getElementById("btnNewGame").disabled = true;
+    //cleans the board
+    CleanBoard();
+    //randomises who's turn it is
+    //playersTurn = Math.random() >= 0.5; // boolean
+    
+    // Set BOARD HTML color to busy
+    //document.getElementsByTagName("board")[0].classList.add("busy");
+    // Disable button
+    //ShowMessage("Setting up new game...");
+    //makes button pressable again
+    shufflePlayer();
+    document.getElementById("btnNewGame").disabled = false;
   }
 }
 
 
-function getColour(player, light) {
-  if (player) {
-    return light ? colourPlayerHover : colourPlayer; //if it is light return colour play lit, else return colour play
+// Clean the fields in HTML and reset BOARD array
+function CleanBoard() {
+  console.log("cleaned");
+  for(let i = 0; i < BOARD_SIZE; i++) {
+    BOARD[i] = UNOCCUPIED;
+    document.getElementById(`f${i}`).innerHTML = "";
+  }
+  console.log(BOARD);
+}
+
+
+//onclick function that fills the board
+//function should take argument and depending on player will do differnet things
+// Function for triggering USER move
+function PlayUser(position,playersTurn) {
+  console.log("PlayUser");
+  console.log(playersTurn);
+  MakeMove(position,playersTurn);
+  switchPlayer(playersTurn)
+  console.log(playersTurn);
+}
+
+//switches the player every turn
+function switchPlayer() {
+  if (playersTurn === "Player2") {
+    playersTurn = "Player1";
   } else {
-    return light ? colourCompHover : colourComp;
+    playersTurn = "Player2";
+  }
+}
+
+//shuffles who goes first
+
+function shufflePlayer() {
+  let random = Math.random() >= 0.5;
+  if (random) {
+    playersTurn = "Player1";
+  } else {
+    playersTurn = "Player2";
   }
 }
 
 
-function getGridX(col) {
-  return cellSize * (col +1);
+// Universal function for setting USER and COMPUTER moves
+function MakeMove(position,playersTurn) {
+  console.log("make move");
+  if (!GameOver(BOARD) && BOARD[position] === UNOCCUPIED) {
+    let activeSymbol = Crucify.GetPlayerSymbol(playersTurn);
+    RenderMove(position, activeSymbol);
+    BOARD[position] = activeSymbol;
+    console.log(BOARD);
+    console.log(playersTurn);
+    //playersTurn = !playersTurn;
+    console.log(playersTurn);
+    //gameover board returns true if the game is over
+    return !GameOver(BOARD);
+  }
+  return false;
 }
 
 
-function getGridY(row) {
-  return topMargin + cellSize * row;
+// Render/Show played move in HTML
+function RenderMove(position, player) {
+  console.log ("render move");
+  return new Promise(function () {
+    document
+      .getElementById(`f${position}`)
+      .insertAdjacentHTML("beforeend", player == "X" ? graphicsX : graphicsO);
+  });
 }
 
-
-function hightlightGrid(/** @type {MouseEvent} */ e) {
-  console.log(e);
-  //highlight should only work if it is the players turn
-  if (!playersTurn) {
-    return;
-  }
-  //get mouse position relative to canvas
-  let a = e.clientX;
-  let b = e.clientY;
-  let x = a - canvRect.left;
-  let y = b - canvRect.top;
-
-  //highlight the square's side
-
-  highlightSide(x, y);
-
-}
-
-
-function highlightSide(x, y) {
-  // clearprevious highlighting
-  for (let row of squares) { //iterate over every row of the squares
-    for (let square of row) {
-      square.highlight = null;
-    }
-  }
-  let rows = squares.length; //useing labels so that when we break loop we break all the loops
-  let cols = squares[0].length;//COLLUMS IS THE NUMBER OF THINGS IN DIMENSION 0 OF ARRAY SQUARES
-  OUTER: for (let i = 0; i < rows; i++) {
-    for (let j = 0; j< cols; j++){
-      if(squares[i][j].contains(x, y)) {
-        let side = squares[i][j].highlightSide(x, y); 
-        break OUTER;
-      }
-    }
+function player1sTurn() {
+  if (ACTIVE_TURN == "Player1") {
+    return true;
+  } else {
+    return false;
   }
 }
 
-
-function newGame() {
-  // deciding who goes first
-  playersTurn = Math.random() >= 0.5; // boolean
-
-  //SET UP SQUARES array
-
-  squares = [];
-  for (let i =0; i< sizeOfGrid +1; i++) {
-
-    squares[i] = []
-      for (let j=0; j< sizeOfGrid +1; j++) {
-        squares[i][j] = new Square(getGridX(j), getGridY(i), cellSize, cellSize);
-      }
+//checks if gameover
+function GameOver(board) {
+  switch (Crucify.CheckForWinner(board)) {
+    case 1:
+      console.log("tie")
+      break;
+    case 2:
+      
+      //ShowMessage("You win! Congratulations!", USER_PLAYER);
+      break;
+    case 3:
+      //ShowMessage("Computer wins this time!", COMPUTER_PLAYER);
+      break;
+    default:
+      return false;
   }
-}
-function drawGrid() {
-  for (let i =0; i< sizeOfGrid +1; i++) //looping rows size of grid is the size of spaces so +1
-    for (let j=0; j< sizeOfGrid +1; j++) // looping collumns
-      drawDot(getGridX(j), getGridY(i));
-}
-
-// when moving mouse want to know what cell we are on, do this by creating an object 
-//create square object constructor
-function Square(x, y, w, h) {
-  this.w = w;
-  this.h = h;
-  this.bottom = y + h; //this.binds objects to make them easier to call
-  this.left = x;
-  this.right = x +w;
-  this.top = y;
-  this.highlight = null;
-  this.sideBot = {owner: null, selected: false};
-  this.sideLeft = {owner: null, selected: false};
-  this.sideRight = {owner: null, selected: false};
-  this.sideTop = {owner: null, selected: false};
-
-  this.contains = function(x,y) {
-    return x >= this.left && x < this.right && y >= this.top && y < this.bottom; //checks to see if x and y values are inside 
-  }
-
-  this.drawFill = function () {
-    //TO DO FILL
-  }
-
-  this.drawSide = function (side, colour) {
-    switch(side) {
-      case Side.BOT:
-        drawLine(this.left, this.bottom, this.right, this.bottom, colour); //draws line from two corners given by two pairs of sides
-        break;
-      case Side.LEFT:
-          drawLine(this.left, this.top, this.left, this.bottom, colour);
-          break;
-      case Side.RIGHT:
-          drawLine(this.right, this.top, this.right, this.bottom, colour);
-          break;
-      case Side.TOP:
-          drawLine(this.left, this.top, this.right, this.top, colour);
-          break;
-    }
-  }
-  
-  this. highlightSide = function(x,y) { //takes mouse position as anargument
-//uses distancr of mouse from each side to determine what line to draw
-    let dBot = this.bottom - y;
-    let dLeft = x - this.left;
-    let dRight = this.right - x;
-    let dTop = y - this.top;
-
-
-    //determine which side is closest
-    let dClosest = Math.min(dBot, dLeft, dRight, dTop );
-
-    //highlight closest if not already selected
-    if (dClosest == dBot && !this.sideBot.selected) { //if closest line is bottom line, and bottom line is not selected
-      this.highlight = Side.BOT;
-    }
-    else if (dClosest == dLeft && !this.sideLeft.selected) { //if closest line is left line, and left line is not selected
-      this.highlight = Side.LEFT;
-    }
-    else if (dClosest == dRight && !this.sideRight.selected) { //if closest line is bottom line, and bottom line is not selected
-      this.highlight = Side.RIGHT;
-    }
-    else if (dClosest == dTop && !this.sideTop.selected) { //if closest line is bottom line, and bottom line is not selected
-      this.highlight = Side.TOP;
-    }
-  return this.highlight;
-  }
-
-  this.drawSides = function() {
-    if (this.highlight != null) {
-      this.drawSide(this.highlight, getColour(playersTurn, true)); //calls function drawline which draws a line depending 
-    }
-  }
+  // Game is over, return true and set BOARD HTML color to busy
+  document.getElementsByTagName("MAIN")[0].classList.add("busy");
+  return true;
 }
 

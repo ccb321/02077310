@@ -3,25 +3,42 @@
 <!doctype html> <!-- This first line tells browsers to expect modern standard html 5 -->
 <html lang="en-gb"> <!-- This is indicates the page is written in British English, useful for accessibility -->
 <meta charset="utf-8"> <!-- This indicates how the file is encoded. utf-8 is standard -->
-<title>ULTIAMATUM</title> <!-- All pages need a title, this will be displayed in the browser's title bar -->
-<link rel="stylesheet" href="default.css"> <!-- Import style sheet – default.css -->
-<link rel="icon" href="./assets/favicon.png"> <!-- Import 'Favorites Icon' – favicon.png -->
-<!--<script type="module" src="main.js"></script>  Load the main script. Must be type="module". Have only one of these -->
+<head>
+    <title>CRUCIFY</title> <!-- All pages need a title, this will be displayed in the browser's title bar -->
+    <link rel="stylesheet" href="default.css"> <!-- Import style sheet – default.css -->
+    <script type="module" src="main.js"></script> 
+    <!--<link rel="icon" href="./assets/favicon.png">  Import 'Favorites Icon' – favicon.png -->
+    <!-- <script type="module" src="main.js"></script>  Load the main script. Must be type="module". Have only one of these -->
+    <!--<script scr = "main.js" defer></script>-->
+    <audio src = "C:\Users\conjb\Documents\GitHub\computing_2_02077310\Audio" autoplay loop></audio>
+</head>
 
-<html>
+    <!--<script type="text/javascript" src="web-app\browser\main.js"></script>
+    <script type="text/javascript" src="web-app\common\Crucify.js"></script>-->
 <body>
-    <!--<div>
-        <canvas id="canvas"></canvas>
-        <p>Player 1: <span id = "player1"></span></p>
-        <p>Player 2: <span id = "player2"></span></p>
-    </div>-->
-    <div>
-       <script type="text/JavaScript" src="main.js">
-       </script>
-       <!--<script>canvas.addEventListener("mousemove", function (e) {
-            console.log(e);})-->
-    </script>
-    </div>
+    <main class="board">
+        <figure id="f0" ></figure>
+        <figure id="f1" ></figure>
+        <figure id="f2" ></figure>
+        <figure id="f3" ></figure>
+        <figure id="f4" ></figure>
+        <figure id="f5" ></figure>
+        <figure id="f6" ></figure>
+        <figure id="f7" ></figure>
+        <figure id="f8" ></figure>
+        <figure id="f9" ></figure>
+        <figure id="f10" ></figure>
+        <figure id="f11" ></figure>
+        <figure id="f12" ></figure>
+        <figure id="f13" ></figure>
+        <figure id="f14" ></figure>
+        <figure id="f15" ></figure>
+      </main>
+      <button id="btnNewGame" >AGAIN? </button>
+      <style>
+        body {
+            background-color: lightblue;
+            }
+      </style>
 </body>
-
 </html>
