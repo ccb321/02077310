@@ -30,6 +30,17 @@ Crucify.GetPlayerSymbol = function (playersTurn) {
   }
 }
 
+Crucify.getOppositeSymbol = function (playersTurn) {
+  if (playersTurn == "Player1") {
+    console.log("player 1");
+    return Player_2;
+  } else {
+    console.log("player2");
+    return Player_1;
+  }
+}
+
+
 Crucify.CheckForWinner = function(board){
   console.log("cheese");
  // Check for horizontal wins

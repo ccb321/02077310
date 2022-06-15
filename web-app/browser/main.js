@@ -30,10 +30,10 @@ let Player_2 = "O";
 let playersTurn = "Player1";
 let numberOfTurns = 0;
 const BOARD = new Array();
-
+const fixedArray = [0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3];
 //graphics
 
-let graphicsX = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.2 47.95">
+let graphicsX = `<svg viewBox="0 0 45.2 47.95">
 <defs>
     <style>
         .xcls-1 {
@@ -54,7 +54,7 @@ let graphicsX = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.2 47.95
         d="M43.71,5.23a1,1,0,0,1,1,1v4.12a1,1,0,0,1-.21.61L33.61,24.84a1,1,0,0,0,0,1.19L45,42.24a1,1,0,0,1,.18.58V47a1,1,0,0,1-1,1H36.73a1,1,0,0,1-.83-.44L26,32.61a1,1,0,0,0-.82-.44,1,1,0,0,0-.84.45L14.51,47.5a1,1,0,0,1-.84.45H6.22a1,1,0,0,1-1-1V42.81a1,1,0,0,1,.17-.56L16.45,26a1,1,0,0,0,0-1.15L6.12,11a1,1,0,0,1-.2-.6V6.23a1,1,0,0,1,1-1h7.12a1,1,0,0,1,.81.42l9.52,13a1,1,0,0,0,.81.41,1,1,0,0,0,.8-.4l9.83-13a1,1,0,0,1,.81-.41Z" />
 </svg>`;
 
-let graphicsO = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52.68 50.95">
+let graphicsO = `<svg  viewBox="0 0 52.68 50.95">
 <defs>
     <style>
         .ocls-1 {
@@ -160,7 +160,6 @@ function NewGame() {
 
 // Clean the fields in HTML and reset BOARD array
 function CleanBoard() {
-  console.log("cleaned");
   for(let i = 0; i < BOARD_SIZE; i++) {
     BOARD[i] = UNOCCUPIED;
     document.getElementById(`f${i}`).innerHTML = "";
@@ -173,7 +172,6 @@ function CleanBoard() {
 //function should take argument and depending on player will do differnet things
 // Function for triggering USER move
 function PlayUser(position,playersTurn) {
-  console.log("PlayUser");
   console.log(playersTurn);
   MakeMove(position,playersTurn);
   switchPlayer(playersTurn)
@@ -203,15 +201,24 @@ function shufflePlayer() {
 
 // Universal function for setting USER and COMPUTER moves
 function MakeMove(position,playersTurn) {
-  console.log("make move");
   if (!GameOver(BOARD) && BOARD[position] === UNOCCUPIED) {
     let activeSymbol = Crucify.GetPlayerSymbol(playersTurn);
     RenderMove(position, activeSymbol);
     BOARD[position] = activeSymbol;
     console.log(BOARD);
-    console.log(playersTurn);
-    //playersTurn = !playersTurn;
-    console.log(playersTurn);
+    //check special rules
+    acrossForwards(position,playersTurn);
+    acrossBackwards(position,playersTurn);
+    horizontalUp(position,playersTurn);
+    horizontalDown(position,playersTurn);
+    diagonalDownRight(position,playersTurn);
+    diagonalDownLeft(position,playersTurn);
+    diagonalUpLeft(position,playersTurn);
+    diagonalUpRight(position,playersTurn);
+    topLeftCorner(position,playersTurn);
+    topRightCorner(position,playersTurn);
+    bottomRightCorner(position,playersTurn);
+    bottomLeftCorner(position,playersTurn);
     //gameover board returns true if the game is over
     return !GameOver(BOARD);
   }
@@ -221,7 +228,6 @@ function MakeMove(position,playersTurn) {
 
 // Render/Show played move in HTML
 function RenderMove(position, player) {
-  console.log ("render move");
   return new Promise(function () {
     document
       .getElementById(`f${position}`)
@@ -258,3 +264,184 @@ function GameOver(board) {
   return true;
 }
 
+
+//teh following functions are the special moves
+function acrossForwards(position,player) {
+  if (fixedArray[position]<2) {
+    if (BOARD[position+1] == Crucify.getOppositeSymbol(player)) {
+      if(BOARD[position+2] == Crucify.GetPlayerSymbol(player)) {
+        BOARD[position+1] = UNOCCUPIED;
+        document.getElementById(`f${position + 1}`).innerHTML = "";
+      }
+    }
+  }
+}
+
+function acrossBackwards(position,player) {
+  if (fixedArray[position]>1) {
+    if (BOARD[position-1] == Crucify.getOppositeSymbol(player)) {
+      if(BOARD[position-2] == Crucify.GetPlayerSymbol(player)) {
+        BOARD[position-1] = UNOCCUPIED;
+        document.getElementById(`f${position - 1}`).innerHTML = "";
+      }
+    }
+  }
+}
+
+function horizontalUp(position,player) {
+  if (position > 7) {
+    if (BOARD[position-4] == Crucify.getOppositeSymbol(player)) {
+      if(BOARD[position-8] == Crucify.GetPlayerSymbol(player)) {
+        BOARD[position-4] = UNOCCUPIED;
+        document.getElementById(`f${position - 4}`).innerHTML = "";
+      }
+    }
+  }
+}
+
+function horizontalDown(position,player) {
+  if (position < 8) {
+    if (BOARD[position+4] == Crucify.getOppositeSymbol(player)) {
+      if(BOARD[position+8] == Crucify.GetPlayerSymbol(player)) {
+        BOARD[position+4] = UNOCCUPIED;
+        document.getElementById(`f${position + 4}`).innerHTML = "";
+      }
+    }
+  }
+}
+
+function diagonalDownRight(position,player) {
+  if (position == 8 || position == 9 || position == 12 || position == 13) {
+    if (BOARD[position-3] == Crucify.getOppositeSymbol(player)) {
+      if(BOARD[position-6] == Crucify.GetPlayerSymbol(player)) {
+        BOARD[position -3] = Crucify.GetPlayerSymbol(player);
+        document.getElementById(`f${position - 3}`).innerHTML = "";
+        RenderMove(position-3, Crucify.GetPlayerSymbol(player));
+      }
+    }
+  }
+}
+
+function diagonalDownLeft(position,player) {
+  if (position == 10 || position == 11 || position == 14 || position == 15) {
+    if (BOARD[position-5] == Crucify.getOppositeSymbol(player)) {
+      if(BOARD[position-10] == Crucify.GetPlayerSymbol(player)) {
+        BOARD[position -5] = Crucify.GetPlayerSymbol(player);
+        document.getElementById(`f${position - 5}`).innerHTML = "";
+        RenderMove(position-5, Crucify.GetPlayerSymbol(player));
+      }
+    }
+  }
+}
+
+function diagonalUpRight(position,player) {
+  if (position == 2 || position == 3 || position == 6 || position == 7) {
+    if (BOARD[position+3] == Crucify.getOppositeSymbol(player)) {
+      if(BOARD[position+6] == Crucify.GetPlayerSymbol(player)) {
+        BOARD[position +3] = Crucify.GetPlayerSymbol(player);
+        document.getElementById(`f${position + 3}`).innerHTML = "";
+        RenderMove(position+3, Crucify.GetPlayerSymbol(player));
+      }
+    }
+  }
+}
+
+function diagonalUpLeft(position,player) {
+  if (position == 0 || position == 1 || position == 4 || position == 5) {
+    if (BOARD[position+5] == Crucify.getOppositeSymbol(player)) {
+      if(BOARD[position+10] == Crucify.GetPlayerSymbol(player)) {
+        BOARD[position +5] = Crucify.GetPlayerSymbol(player);
+        document.getElementById(`f${position + 5}`).innerHTML = "";
+        RenderMove(position+5, Crucify.GetPlayerSymbol(player));
+      }
+    }
+  }
+}
+
+function topLeftCorner(position,player) {
+  if (position == 1 || position == 4 || position == 5 ) {
+    let cornerCounter = 0;
+    if (BOARD[0] == Crucify.getOppositeSymbol(player)) {
+      if (BOARD[1] == Crucify.GetPlayerSymbol(player)) {
+        cornerCounter++
+      }
+      if (BOARD[4] == Crucify.GetPlayerSymbol(player)) {
+        cornerCounter++
+      }
+      if (BOARD[5] == Crucify.GetPlayerSymbol(player)) {
+        cornerCounter++
+      }
+      if (cornerCounter ==3) {
+        BOARD[0] = Crucify.GetPlayerSymbol(player);
+        document.getElementById(`f${0}`).innerHTML = "";
+        RenderMove(0, Crucify.GetPlayerSymbol(player));
+      }
+    }
+  }
+}
+
+function topRightCorner(position,player) {
+  if (position == 2 || position == 6 || position == 7 ) {
+    let cornerCounter = 0;
+    if (BOARD[3] == Crucify.getOppositeSymbol(player)) {
+      if (BOARD[2] == Crucify.GetPlayerSymbol(player)) {
+        cornerCounter++
+      }
+      if (BOARD[6] == Crucify.GetPlayerSymbol(player)) {
+        cornerCounter++
+      }
+      if (BOARD[7] == Crucify.GetPlayerSymbol(player)) {
+        cornerCounter++
+      }
+      if (cornerCounter ==3) {
+        BOARD[3] = Crucify.GetPlayerSymbol(player);
+        document.getElementById(`f${3}`).innerHTML = "";
+        RenderMove(3, Crucify.GetPlayerSymbol(player));
+      }
+    }
+  }
+}
+
+function bottomLeftCorner(position,player) {
+  if (position == 8 || position == 9 || position == 13 ) {
+    let cornerCounter = 0;
+    if (BOARD[12] == Crucify.getOppositeSymbol(player)) {
+      if (BOARD[8] == Crucify.GetPlayerSymbol(player)) {
+        cornerCounter++
+      }
+      if (BOARD[9] == Crucify.GetPlayerSymbol(player)) {
+        cornerCounter++
+      }
+      if (BOARD[13] == Crucify.GetPlayerSymbol(player)) {
+        cornerCounter++
+      }
+      if (cornerCounter ==3) {
+        BOARD[12] = Crucify.GetPlayerSymbol(player);
+        document.getElementById(`f${12}`).innerHTML = "";
+        RenderMove(12, Crucify.GetPlayerSymbol(player));
+      }
+    }
+  }
+}
+
+function bottomRightCorner(position,player) {
+  if (position == 10 || position == 11|| position == 14 ) {
+    let cornerCounter = 0;
+    if (BOARD[15] == Crucify.getOppositeSymbol(player)) {
+      if (BOARD[10] == Crucify.GetPlayerSymbol(player)) {
+        cornerCounter++
+      }
+      if (BOARD[11] == Crucify.GetPlayerSymbol(player)) {
+        cornerCounter++
+      }
+      if (BOARD[14] == Crucify.GetPlayerSymbol(player)) {
+        cornerCounter++
+      }
+      if (cornerCounter ==3) {
+        BOARD[15] = Crucify.GetPlayerSymbol(player);
+        document.getElementById(`f${15}`).innerHTML = "";
+        RenderMove(15, Crucify.GetPlayerSymbol(player));
+      }
+    }
+  }
+}
