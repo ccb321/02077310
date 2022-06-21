@@ -74,7 +74,7 @@ Crucify.CheckForWinner = function(board){
   ) {
     return board[0] == Player_1 ? 2 : 3;
   }
-  // Check for secondary diagonal win
+  // Check for other diagonal win
   if (
     board[3] !== UNOCCUPIED &&
     board[3] === board[6] &&

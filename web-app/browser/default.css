@@ -16,9 +16,9 @@ body {
   flex-direction: column;
   padding-top: 5vh;
 }
-.game-logo {
-  width: 8rem;
-  height: 8rem;
+.logo {
+  width: 20rem;
+  height: 20rem;
 }
 #notification-bar {
   width: 18.5rem;
@@ -33,7 +33,7 @@ body {
   grid-template: repeat(4, 4rem) / repeat(4, 4rem);
   gap: 0.5rem;
   padding: 0.5rem;
-  background-color: #1c1c1c;
+  background-color: #33464e;
   border-radius: 0.5rem;
 }
 .busy figure {
@@ -54,7 +54,7 @@ body {
 figure {
   margin: 0;
   display: flex;
-  background-color: #506d8a;
+  background-color: #8b9cad;
   border-radius: 0.2rem;
   justify-content: center;
   align-items: center;
@@ -72,7 +72,7 @@ button {
   padding: 0.6rem 0.8rem;
   border-radius: 0.2rem;
   border: 1px solid transparent;
-  background-color: #1c1c1c;
+  background-color: #3f7da1;
   text-transform: uppercase;
   font-weight: bold;
   color: #e1e6eb;

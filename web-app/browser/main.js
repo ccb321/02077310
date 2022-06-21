@@ -144,10 +144,7 @@ function NewGame() {
     document.getElementById("btnNewGame").disabled = true;
     //cleans the board
     CleanBoard();
-    // Set BOARD HTML color to busy
-    //document.getElementsByTagName("board")[0].classList.add("busy");
-    //ShowMessage("Setting up new game...");
-    //makes button pressable again
+    //shuffles player
     shufflePlayer();
     document.getElementById("btnNewGame").disabled = false;
   }
@@ -169,8 +166,10 @@ function CleanBoard() {
 // Function for triggering USER move
 function PlayUser(position,playersTurn) {
   console.log(playersTurn);
+  whosTurn(playersTurn);
   MakeMove(position,playersTurn);
   switchPlayer(playersTurn)
+  whosTurn(playersTurn);
   console.log(playersTurn);
 }
 
@@ -189,8 +188,10 @@ function shufflePlayer() {
   let random = Math.random() >= 0.5;
   if (random) {
     playersTurn = "Player1";
+    displayMessage("Player 1 goes first")
   } else {
     playersTurn = "Player2";
+    displayMessage("player 2 goes first")
   }
 }
 
@@ -216,7 +217,7 @@ function MakeMove(position,playersTurn) {
     bottomRightCorner(position,playersTurn);
     bottomLeftCorner(position,playersTurn);
     //gameover board returns true if the game is over
-    return !GameOver(BOARD);
+    return !GameOver(BOARD,playersTurn);
   }
   return false;
 }
@@ -244,14 +245,16 @@ function GameOver(board) {
   switch (Crucify.CheckForWinner(board)) {
     case 1:
       console.log("tie");
+      displayMessage("An Even Bout", UNOCCUPIED)
       break;
     case 2:
       console.log("Player 1 win");
-      
+      displayMessage("PLAYER 2 HAS BEEN CRUCIFIED")
       //ShowMessage("You win! Congratulations!", PLAYER1);
       break;
     case 3:
       console.log("player2 win");
+      displayMessage("PLAYER 1 HAS BEEN CRUCIFIED")
       //ShowMessage("Computer wins this time!", PLAYER2);
       break;
     default:
@@ -260,6 +263,21 @@ function GameOver(board) {
   // Game is over, return true and set BOARD HTML color to busy
   document.getElementsByTagName("MAIN")[0].classList.add("busy");
   return true;
+}
+//function to display turn
+
+function whosTurn(playersTurn) {
+  if (playersTurn == "Player1") {
+    displayMessage("Player 1 decides");
+  } else {
+    displayMessage("Player 2 decides");
+  }
+}
+
+//functions to display win message 
+function displayMessage(message) {
+  let notification_bar = document.getElementById("display");
+  notification_bar.innerHTML = message;
 }
 
 
