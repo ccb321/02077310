@@ -2,13 +2,13 @@
   box-sizing: border-box;
 }
 body {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   margin: 0;
-  background-color: #374859;
-  color: #e1e6eb;
+  color: #d1dfe1;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -18,14 +18,18 @@ body {
 }
 .logo {
   width: 20rem;
-  height: 20rem;
+  height: 18rem;
 }
-#notification-bar {
+.players {
+  width: 20rem;
+  height: 2rem;
+}
+#display {
   width: 18.5rem;
   margin: 1.5rem 0 1rem 0;
   padding: 0.3rem 0;
   border-radius: 0.3rem;
-  border: 1px solid #1c1c1c;
+  border: 4px solid #1c1c1c;
   transition-duration: 0.1s;
 }
 .board {
@@ -103,18 +107,7 @@ button:active {
     background-color: #526274;
   }
 }
-@media screen and (max-width: 400px) {
-  html,
-  body,
-  #app {
-    font-size: 16px;
-    padding-top: 4vh;
-  }
-  .game-logo {
-    width: 6rem;
-    height: 6rem;
-  }
-}
+
 @media screen and (min-width: 400px) {
   html,
   body,

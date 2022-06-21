@@ -166,10 +166,8 @@ function CleanBoard() {
 // Function for triggering USER move
 function PlayUser(position,playersTurn) {
   console.log(playersTurn);
-  whosTurn(playersTurn);
   MakeMove(position,playersTurn);
   switchPlayer(playersTurn)
-  whosTurn(playersTurn);
   console.log(playersTurn);
 }
 
@@ -200,6 +198,7 @@ function shufflePlayer() {
 function MakeMove(position,playersTurn) {
   if (!GameOver(BOARD) && BOARD[position] === UNOCCUPIED) {
     let activeSymbol = Crucify.GetPlayerSymbol(playersTurn);
+    whosTurn(playersTurn);
     RenderMove(position, activeSymbol);
     BOARD[position] = activeSymbol;
     console.log(BOARD);
@@ -233,7 +232,7 @@ function RenderMove(position, player) {
 }
 
 function player1sTurn() {
-  if (ACTIVE_TURN == "Player1") {
+  if (ACTIVE_TURN == "Player2") {
     return true;
   } else {
     return false;
@@ -266,8 +265,8 @@ function GameOver(board) {
 }
 //function to display turn
 
-function whosTurn(playersTurn) {
-  if (playersTurn == "Player1") {
+function whosTurn(playersTurn) {//in this code nothing happens until you click, so the display for who's turn it is has to be inverted 
+  if (playersTurn == "Player2") {
     displayMessage("Player 1 decides");
   } else {
     displayMessage("Player 2 decides");
