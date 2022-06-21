@@ -147,6 +147,7 @@ function NewGame() {
     //shuffles player
     shufflePlayer();
     document.getElementById("btnNewGame").disabled = false;
+    document.getElementsByTagName("MAIN")[0].classList.remove("busy");
   }
 }
 
