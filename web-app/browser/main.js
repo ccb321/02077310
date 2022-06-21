@@ -247,14 +247,16 @@ function player1sTurn() {
 function GameOver(board) {
   switch (Crucify.CheckForWinner(board)) {
     case 1:
-      console.log("tie")
+      console.log("tie");
       break;
     case 2:
+      console.log("Player 1 win");
       
-      //ShowMessage("You win! Congratulations!", USER_PLAYER);
+      //ShowMessage("You win! Congratulations!", PLAYER1);
       break;
     case 3:
-      //ShowMessage("Computer wins this time!", COMPUTER_PLAYER);
+      console.log("player2 win");
+      //ShowMessage("Computer wins this time!", PLAYER2);
       break;
     default:
       return false;
