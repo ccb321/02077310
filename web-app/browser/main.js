@@ -144,12 +144,8 @@ function NewGame() {
     document.getElementById("btnNewGame").disabled = true;
     //cleans the board
     CleanBoard();
-    //randomises who's turn it is
-    //playersTurn = Math.random() >= 0.5; // boolean
-    
     // Set BOARD HTML color to busy
     //document.getElementsByTagName("board")[0].classList.add("busy");
-    // Disable button
     //ShowMessage("Setting up new game...");
     //makes button pressable again
     shufflePlayer();
